@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>jin.not.gin</title>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap"
+			rel="stylesheet"
+		/>
+		<style>
+			:root {
+				--primary: #25a25a; /* Darker bright green */
+				--secondary: #1f8b4c; /* Even darker green */
+				--accent: #8bc4a8; /* Darker mint */
+				--background: #e8f5ed; /* Slightly darker background */
+				--text: #153d23; /* Darker text */
+			}
+
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				font-family: "Space Mono", monospace;
+				background-color: var(--background);
+				color: var(--text);
+				overflow-x: hidden;
+			}
+
+			.container {
+				max-width: 1200px;
+				margin: 0 auto;
+				padding: 2rem;
+			}
+
+			header {
+				text-align: center;
+				padding: 0.5rem 0;
+			}
+
+			.bouncy-text {
+				font-size: 4rem;
+				animation: bounce 2s infinite;
+				cursor: pointer;
+				letter-spacing: -2px;
+				display: inline-block;
+			}
+
+			.bouncy-text .jin,
+			.bouncy-text .gin {
+				font-weight: 800;
+				color: var(--primary);
+				text-shadow: 3px 3px 0 var(--secondary);
+			}
+
+			.bouncy-text .not {
+				font-weight: 300;
+				font-style: italic;
+				font-size: 0.9em;
+				color: var(--secondary);
+				text-transform: uppercase;
+			}
+
+			.bouncy-text .dot {
+				color: var(--accent);
+				font-weight: 800;
+				margin: 0 0.1em;
+				position: relative;
+				top: -0.2em;
+				text-shadow: 2px 2px 0 var(--secondary);
+			}
+
+			@keyframes bounce {
+				0%,
+				100% {
+					transform: translateY(0);
+				}
+				50% {
+					transform: translateY(-20px);
+				}
+			}
+
+			.interactive-area {
+				min-height: 300px;
+				position: relative;
+				background: rgba(46, 204, 113, 0.1);
+				border-radius: 20px;
+				margin: 2rem 0;
+				overflow: hidden;
+			}
+
+			.floating-not {
+				position: absolute;
+				padding: 1rem;
+				background: var(--accent);
+				border-radius: 50%;
+				cursor: pointer;
+				transition: transform 0.3s ease;
+			}
+
+			.content {
+				padding: 2rem;
+				background: white;
+				border-radius: 20px;
+				box-shadow: 0 4px 15px rgba(26, 71, 42, 0.1);
+			}
+
+			.fun-facts {
+				margin-top: 2rem;
+			}
+
+			.interactive-list li {
+				list-style: none;
+				padding: 1rem;
+				margin: 0.5rem 0;
+				background: rgba(46, 204, 113, 0.1);
+				border-radius: 10px;
+				transition: transform 0.3s ease;
+				cursor: pointer;
+			}
+
+			.interactive-list li:hover {
+				transform: translateX(10px);
+				background: rgba(46, 204, 113, 0.2);
+			}
+
+			.bubble {
+				position: absolute;
+				background: rgba(46, 204, 113, 0.2);
+				border-radius: 50%;
+				pointer-events: none;
+				animation: float 4s infinite;
+			}
+
+			@keyframes float {
+				0%,
+				100% {
+					transform: translateY(0) translateX(0);
+				}
+				50% {
+					transform: translateY(-20px) translateX(10px);
+				}
+			}
+
+			.intro h2 {
+				color: var(--primary);
+				margin-bottom: 1rem;
+			}
+
+			.playful-text {
+				font-size: 1.2rem;
+				color: var(--secondary);
+			}
+
+			footer {
+				text-align: center;
+				padding: 2rem;
+				margin-top: 2rem;
+				color: var(--text);
+				font-size: 0.9rem;
+			}
+
+      footer a{
+				color: var(--text);
+      }
+
+			@media (max-width: 768px) {
+				.container {
+					padding: 1rem;
+				}
+
+				.bouncy-text {
+					font-size: 2.5rem;
+				}
+
+				.interactive-area {
+					min-height: 200px;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<header>
+				<h1 class="bouncy-text">
+					<span class="jin">jin</span>
+					<span class="dot">.</span>
+					<span class="not">not</span>
+					<span class="dot">.</span>
+					<span class="gin">gin</span>
+				</h1>
+			</header>
+
+			<main>
+				<div class="interactive-area" id="interactive-area">
+					<!-- Bubbles will be generated here -->
+				</div>
+
+				<div class="content">
+					<section class="intro">
+						<h2>Who is Jin?</h2>
+						<p class="playful-text">Definitely NOT your favorite spirit! 🌿</p>
+					</section>
+
+					<section class="fun-facts">
+						<h2>Things Jin is NOT:</h2>
+						<ul class="interactive-list">
+							<li>❌ A bottle of gin</li>
+							<li>❌ Made with juniper berries</li>
+							<li>❌ 40% alcohol</li>
+							<li>✅ Actually a person!</li>
+						</ul>
+					</section>
+				</div>
+			</main>
+
+			<footer>
+				<p>
+					ⓒ {YEAR} <a href="https://linjin.me" target="_blank">jin</a>.not.gin | No actual gin was harmed in the making of this
+					website
+				</p>
+			</footer>
+		</div>
+		<script>
+			document.addEventListener("DOMContentLoaded", () => {
+				const footerYear = document.querySelector("footer p");
+				footerYear.innerHTML = footerYear.innerHTML.replace(
+					"{YEAR}",
+					new Date().getFullYear()
+				);
+
+				const interactiveArea = document.getElementById("interactive-area");
+
+				// Create initial bubbles
+				for (let i = 0; i < 5; i++) {
+					createBubble();
+				}
+
+				// Add click handler for bouncy text
+				document.querySelector(".bouncy-text").addEventListener("click", () => {
+					createConfetti();
+				});
+
+				// Add hover effects for interactive area
+				interactiveArea.addEventListener("mousemove", (e) => {
+					const rect = interactiveArea.getBoundingClientRect();
+					const x = e.clientX - rect.left;
+					const y = e.clientY - rect.top;
+					createSmallBubble(x, y);
+				});
+
+				// Add click handlers for list items
+				document.querySelectorAll(".interactive-list li").forEach((item) => {
+					item.addEventListener("click", () => {
+						item.style.transform = "translateX(20px)";
+						setTimeout(() => {
+							item.style.transform = "translateX(0)";
+						}, 200);
+					});
+				});
+			});
+
+			function createBubble() {
+				const bubble = document.createElement("div");
+				bubble.className = "bubble";
+				const size = Math.random() * 50 + 20;
+				bubble.style.width = `${size}px`;
+				bubble.style.height = `${size}px`;
+				bubble.style.left = `${Math.random() * 100}%`;
+				bubble.style.top = `${Math.random() * 100}%`;
+
+				document.getElementById("interactive-area").appendChild(bubble);
+
+				setTimeout(() => {
+					bubble.remove();
+					createBubble();
+				}, 4000);
+			}
+
+			function createSmallBubble(x, y) {
+				const bubble = document.createElement("div");
+				bubble.className = "bubble";
+				bubble.style.width = "10px";
+				bubble.style.height = "10px";
+				bubble.style.left = `${x}px`;
+				bubble.style.top = `${y}px`;
+
+				document.getElementById("interactive-area").appendChild(bubble);
+
+				setTimeout(() => bubble.remove(), 1000);
+			}
+
+			function createConfetti() {
+				for (let i = 0; i < 50; i++) {
+					const confetti = document.createElement("div");
+					confetti.style.position = "fixed";
+					confetti.style.width = "10px";
+					confetti.style.height = "10px";
+					confetti.style.backgroundColor = ["#2ECC71", "#27AE60", "#A8E6CF"][
+						Math.floor(Math.random() * 3)
+					];
+					confetti.style.left = `${Math.random() * 100}vw`;
+					confetti.style.top = "-10px";
+					confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+					confetti.style.transition = "all 1s ease";
+
+					document.body.appendChild(confetti);
+
+					setTimeout(() => {
+						confetti.style.top = "110vh";
+						confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+					}, 50);
+
+					setTimeout(() => confetti.remove(), 2000);
+				}
+			}
+		</script>
+	</body>
+</html>
