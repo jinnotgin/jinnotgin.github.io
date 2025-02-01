@@ -90,6 +90,7 @@
 				border-radius: 20px;
 				margin: 2rem 0;
 				overflow: hidden;
+				cursor: pointer;
 			}
 
 			.floating-not {
@@ -131,8 +132,21 @@
 				position: absolute;
 				background: rgba(46, 204, 113, 0.2);
 				border-radius: 50%;
-				pointer-events: none;
+				pointer-events: auto;
 				animation: float 4s infinite;
+				transition: transform 0.3s ease, opacity 0.3s ease;
+			}
+
+			/* Bubble enlarges slightly on hover */
+			.bubble:hover {
+				transform: scale(1.2);
+			}
+
+			/* When a bubble is popped (clicked) */
+			.bubble.popped {
+				animation: none !important;
+				transform: scale(2) !important;
+				opacity: 0 !important;
 			}
 
 			@keyframes float {
@@ -226,6 +240,7 @@
 		</div>
 		<script>
 			document.addEventListener("DOMContentLoaded", () => {
+				// Update the footer with the current year
 				const footerYear = document.querySelector("footer p");
 				footerYear.innerHTML = footerYear.innerHTML.replace(
 					"{YEAR}",
@@ -234,22 +249,34 @@
 
 				const interactiveArea = document.getElementById("interactive-area");
 
-				// Create initial bubbles
-				for (let i = 0; i < 5; i++) {
+				// Create initial floating bubbles (increased count for more big bubbles)
+				for (let i = 0; i < 10; i++) {
 					createBubble();
 				}
 
-				// Add click handler for bouncy text
+				// Add click handler for bouncy text (confetti effect)
 				document.querySelector(".bouncy-text").addEventListener("click", () => {
 					createConfetti();
 				});
 
-				// Add hover effects for interactive area
+				// Add mousemove handler for interactive area (creates tiny bubbles)
 				interactiveArea.addEventListener("mousemove", (e) => {
 					const rect = interactiveArea.getBoundingClientRect();
 					const x = e.clientX - rect.left;
 					const y = e.clientY - rect.top;
 					createSmallBubble(x, y);
+				});
+
+				// Add click handler for interactive area to trigger an explosion effect
+				interactiveArea.addEventListener("click", (e) => {
+					// Only trigger if the interactive area itself was clicked,
+					// not one of its child elements (like a bubble)
+					if (e.target === interactiveArea) {
+						const rect = interactiveArea.getBoundingClientRect();
+						const x = e.clientX - rect.left;
+						const y = e.clientY - rect.top;
+						createExplosion(x, y);
+					}
 				});
 
 				// Add click handlers for list items
@@ -263,6 +290,7 @@
 				});
 			});
 
+			// Creates a continuously floating bubble that can be popped on click.
 			function createBubble() {
 				const bubble = document.createElement("div");
 				bubble.className = "bubble";
@@ -272,14 +300,30 @@
 				bubble.style.left = `${Math.random() * 100}%`;
 				bubble.style.top = `${Math.random() * 100}%`;
 
+				// Add click event so the bubble "pops"
+				bubble.addEventListener("click", (e) => {
+					// Prevent the click from bubbling to the interactive area
+					e.stopPropagation();
+					bubble.classList.add("popped");
+					setTimeout(() => {
+						bubble.remove();
+						createBubble();
+					}, 300);
+				});
+
 				document.getElementById("interactive-area").appendChild(bubble);
 
+				// Remove and recreate bubble after its animation duration
 				setTimeout(() => {
-					bubble.remove();
-					createBubble();
+					// If bubble hasn't already been popped
+					if (document.body.contains(bubble)) {
+						bubble.remove();
+						createBubble();
+					}
 				}, 4000);
 			}
 
+			// Creates a small bubble at the cursor position on mousemove
 			function createSmallBubble(x, y) {
 				const bubble = document.createElement("div");
 				bubble.className = "bubble";
@@ -290,9 +334,47 @@
 
 				document.getElementById("interactive-area").appendChild(bubble);
 
+				// Remove the small bubble after a short delay
 				setTimeout(() => bubble.remove(), 1000);
 			}
 
+			// Creates a burst of small explosion bubbles at the given coordinates
+			function createExplosion(x, y) {
+				for (let i = 0; i < 40; i++) {
+					const explosionBubble = document.createElement("div");
+					explosionBubble.className = "bubble";
+					// Override default animation for explosion bubbles
+					explosionBubble.style.animation = "none";
+					// Increase the explosion bubble size
+					explosionBubble.style.width = "12px";
+					explosionBubble.style.height = "12px";
+					explosionBubble.style.left = `${x}px`;
+					explosionBubble.style.top = `${y}px`;
+					explosionBubble.style.opacity = "1";
+					document
+						.getElementById("interactive-area")
+						.appendChild(explosionBubble);
+
+					// Determine random direction and distance (increased for larger explosion)
+					const angle = Math.random() * 2 * Math.PI;
+					const distance = Math.random() * 150 + 100;
+					const destX = x + Math.cos(angle) * distance;
+					const destY = y + Math.sin(angle) * distance;
+					explosionBubble.style.transition = "all 1s ease-out";
+
+					// Animate the explosion bubble moving outward and fading
+					setTimeout(() => {
+						explosionBubble.style.left = `${destX}px`;
+						explosionBubble.style.top = `${destY}px`;
+						explosionBubble.style.opacity = "0";
+					}, 10);
+
+					// Remove the explosion bubble after the animation completes
+					setTimeout(() => explosionBubble.remove(), 1000);
+				}
+			}
+
+			// Creates a confetti effect when the header text is clicked
 			function createConfetti() {
 				for (let i = 0; i < 50; i++) {
 					const confetti = document.createElement("div");
